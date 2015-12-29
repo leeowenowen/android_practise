@@ -4,6 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+/**
+ * 通过代码注册的broadcast receiver在onpause与onresume之间是不会接收广播的。
+ * @author wangli
+ *
+ */
 public class MonitorReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -19,13 +24,15 @@ public class MonitorReceiver extends BroadcastReceiver {
          */
         // 接收安装广播
         if (intent.getAction().equals("android.intent.action.PACKAGE_ADDED")) {
+            String packageName1 = intent.getComponent().getPackageName();
             String packageName = intent.getDataString();
-            System.out.println("NEW INSTALL:" + packageName + "包名的程序");
+            System.out.println("NEW INSTALL:" + packageName + "包名的程序" + packageName1);
         }
         // 接收卸载广播
         if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) {
+            String packageName1 = intent.getComponent().getPackageName();
             String packageName = intent.getDataString();
-            System.out.println("NEW UNINSTALL:" + packageName + "包名的程序");
+            System.out.println("NEW UNINSTALL:" + packageName + "包名的程序" + packageName1);
         }
     }
 

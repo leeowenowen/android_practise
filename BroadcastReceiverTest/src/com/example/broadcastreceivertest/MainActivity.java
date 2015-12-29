@@ -1,9 +1,18 @@
 package com.example.broadcastreceivertest;
 
+import java.io.File;
+
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.Handler;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 public class MainActivity extends Activity {
     /**
@@ -25,6 +34,71 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        // setContentView(R.layout.activity_main);
+        Button btn = new Button(this);
+        btn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse("file://" + "/sdcard/a.apk"), "application/vnd.android.package-archive");
+                startActivityForResult(intent, 200);
+            }
+        });
+
+        setContentView(btn);
+        mReceiver = new MonitorReceiver();
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        intentFilter.addDataScheme("package");
+        registerReceiver(mReceiver, intentFilter);
+        new Handler().postDelayed(new Runnable() {
+            
+            @Override
+            public void run() {
+                startActivity(new Intent(MainActivity.this, MainActivity2.class));
+            }
+        }, 20*1000);
+    }
+
+    private MonitorReceiver mReceiver;
+
+    /** call system install app window */
+    public static void openInstaller(Context context, String apkPath) {
+        if (context == null || TextUtils.isEmpty(apkPath)) {
+            return;
+        }
+
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        File file = new File(apkPath);
+        if (file.exists() && file.isAbsolute()) {
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            try {
+                context.startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    @Override
+    protected void onResume() {
+        // IntentFilter filter = new IntentFilter();
+        // filter.
+        // registerReceiver(new MonitorReceiver(), filter);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
     }
 }
