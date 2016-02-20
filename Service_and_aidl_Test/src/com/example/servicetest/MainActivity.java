@@ -54,6 +54,22 @@ public class MainActivity extends Activity {
                 }
             }
         });
+        
+        // switch2: start-stop service test from broadcast
+        Switch switch3 = new Switch(this);
+        switch3.setText("Bind-Unbind");
+        switch3.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+         
+                } else {
+                   
+                }
+            }
+        });
 
         LinearLayout container = new LinearLayout(this);
         container.setOrientation(LinearLayout.VERTICAL);
@@ -62,6 +78,7 @@ public class MainActivity extends Activity {
                 LinearLayout.LayoutParams.MATCH_PARENT, 200);
         container.addView(switch1, lParams);
         container.addView(switch2, lParams);
+        container.addView(switch3, lParams);
         setContentView(container);
     }
 
